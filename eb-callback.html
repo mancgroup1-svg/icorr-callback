@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="nl-BE">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light dark">
+<title>Terug naar Icorr</title>
+<!--
+  Icorr – doorverwijspagina voor de bankkoppeling (Enable Banking).
+  Host dit ene bestand op een HTTPS-adres dat jij beheert (bv. GitHub Pages) en registreer die URL als
+  "Allowed redirect URL" in je Enable Banking-app. De pagina stuurt ?code=…&state=… (of ?error=…) meteen door
+  naar icorr://bank-callback, zodat de app de koppeling kan afronden.
+  Geen externe bestanden, geen cookies, geen statistieken: er verlaat niets deze pagina behalve naar de app.
+  De code is eenmalig, verloopt snel en is waardeloos zonder jouw privésleutel.
+-->
+<style>
+  /* Icorr Soft UI Evolution: één materiaal, zachte schaduwen, één indigo accent. */
+  :root {
+    --base: #E8ECF2; --hi: #F1F4F8; --lo: #DEE3EA; --text: #2A3140; --muted: #5E6778;
+    --shadow-dark: rgba(163,175,194,.55); --shadow-light: rgba(255,255,255,.9); --rim: rgba(255,255,255,.6);
+    --accent: #5B5FEF; --accent-deep: #4338CA; --accent-text: #4338CA; --negative: #B42323;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --base: #22262C; --hi: #292E35; --lo: #1E2227; --text: #E6E9EE; --muted: #A3AAB6;
+      --shadow-dark: rgba(11,13,16,.8); --shadow-light: rgba(52,58,67,.7); --rim: rgba(255,255,255,.06);
+      --accent: #8387FF; --accent-deep: #6366F1; --accent-text: #A5A8FF; --negative: #FF6B6B;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px;
+    background: var(--base); color: var(--text);
+    font: 17px/1.5 ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  }
+  main {
+    width: 100%; max-width: 30rem; border-radius: 26px; padding: 28px 24px;
+    background: linear-gradient(135deg, var(--hi), var(--lo));
+    box-shadow: 7px 7px 18px var(--shadow-dark), -7px -7px 18px var(--shadow-light), inset 0 .5px 0 var(--rim);
+  }
+  h1 { font-size: 1.6rem; font-weight: 700; line-height: 1.2; margin: 0 0 .5rem; }
+  p { margin: .5rem 0; }
+  .muted { color: var(--muted); font-size: .92rem; }
+  .status { min-height: 1.5em; font-weight: 600; }
+  .status.error { color: var(--negative); }
+  a.button, button {
+    display: inline-block; text-decoration: none; text-align: center; cursor: pointer; border: 0; border-radius: 14px;
+    font-family: inherit; font-size: 1.05rem; font-weight: 600; line-height: 1;
+  }
+  a.button {
+    width: 100%; margin: 1.1rem 0 .6rem; padding: 16px 20px; font-size: 1.15rem; color: #fff;
+    background: linear-gradient(135deg, var(--accent), var(--accent-deep));
+    box-shadow: 0 10px 18px rgba(91,95,239,.35), inset 0 .5px 0 rgba(255,255,255,.35);
+  }
+  a.button:active { transform: scale(.98); }
+  button.secondary {
+    padding: 11px 16px; font-size: .95rem; color: var(--accent-text); background: var(--base);
+    box-shadow: 4px 4px 10px var(--shadow-dark), -4px -4px 10px var(--shadow-light);
+  }
+  button.secondary:active { box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light); }
+  textarea {
+    width: 100%; margin-top: .4rem; padding: 12px; border: 0; border-radius: 14px; resize: none; word-break: break-all;
+    background: var(--base); color: var(--text); font: .8rem/1.35 ui-monospace, Menlo, monospace;
+    box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
+  }
+  .row { display: flex; gap: 12px; align-items: center; margin-top: .7rem; flex-wrap: wrap; }
+  details { margin-top: 1.2rem; }
+  summary { cursor: pointer; color: var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Terug naar Icorr</h1>
+  <p id="status" class="status" role="status" aria-live="polite">Even geduld, Icorr wordt geopend…</p>
+
+  <a id="open" class="button" href="icorr://bank-callback">Open Icorr</a>
+  <p class="muted">Gebeurt er niets? Tik op <strong>Open Icorr</strong>. Werkt ook dat niet, kopieer dan de
+    volledige URL hieronder en plak hem in Icorr bij <em>Lukt het niet automatisch?</em>.</p>
+
+  <label for="url" class="muted">Volledige URL</label>
+  <textarea id="url" rows="4" readonly aria-label="Volledige doorverwijs-URL"></textarea>
+  <div class="row">
+    <button id="copy" class="secondary" type="button">Kopieer URL</button>
+    <span id="copied" class="muted" aria-live="polite"></span>
+  </div>
+
+  <details>
+    <summary>Wat is dit?</summary>
+    <p class="muted">Je gaf net toestemming bij je bank. Deze pagina geeft de eenmalige bevestigingscode door aan
+      de app Icorr op dit toestel. Ze bewaart niets, laadt niets van andere websites en houdt geen statistieken bij.
+      De code is alleen bruikbaar samen met jouw privésleutel, die enkel in je eigen iCloud-sleutelhanger staat.</p>
+  </details>
+  <noscript><p class="status error">JavaScript staat uit. Kopieer de URL uit de adresbalk en plak hem in Icorr.</p></noscript>
+</main>
+<script>
+(function () {
+  "use strict";
+  // Parameters uit de query, of (zelden) uit het fragment.
+  var query = window.location.search;
+  if ((!query || query === "?") && window.location.hash.indexOf("=") > -1) {
+    query = "?" + window.location.hash.slice(1);
+  }
+  var target = "icorr://bank-callback" + (query || "");
+  var params = new URLSearchParams(query);
+  var statusEl = document.getElementById("status");
+  var open = document.getElementById("open");
+  var url = document.getElementById("url");
+
+  open.href = target;
+  url.value = window.location.href;
+
+  if (params.get("code")) {
+    statusEl.textContent = "Bevestiging ontvangen. Icorr rondt de koppeling af.";
+  } else if (params.get("error") || params.get("error_description")) {
+    var reason = params.get("error_description") || params.get("error");
+    var cancelled = /access_denied|cancel/i.test((params.get("error") || "") + " " + reason);
+    statusEl.textContent = cancelled
+      ? "De koppeling werd geannuleerd bij de bank. Je kunt het later opnieuw proberen vanuit Icorr."
+      : "De bank gaf geen toestemming: " + reason;
+    statusEl.className = "status error";
+  } else {
+    statusEl.textContent = "Deze pagina hoort bij de bankkoppeling van Icorr. Er is geen bevestigingscode meegegeven.";
+    statusEl.className = "status error";
+  }
+
+  document.getElementById("copy").addEventListener("click", function () {
+    var done = function () { document.getElementById("copied").textContent = "Gekopieerd."; };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url.value).then(done, function () { url.select(); document.execCommand("copy"); done(); });
+    } else {
+      url.focus(); url.select(); document.execCommand("copy"); done();
+    }
+  });
+
+  // Meteen doorsturen (ook bij een fout, zodat Icorr de annulering netjes kan tonen).
+  if (query && query !== "?") {
+    window.location.replace(target);
+  }
+})();
+</script>
+</body>
+</html>
